@@ -1,11 +1,10 @@
-
 const mongoose = require('mongoose');
 
-const reportSchema = new mongoose.Schema({
-  userId:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  analysisResult: { type: Object, required: true },
-  videoFileName:  { type: String },
+const ReportSchema = new mongoose.Schema({
+  userId:         { type: String, required: true },
+  analysisResult: { type: mongoose.Schema.Types.Mixed, required: true },
+  videoFileName:  { type: String, required: true },
   createdAt:      { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Report', reportSchema);
+module.exports = mongoose.model('Report', ReportSchema);

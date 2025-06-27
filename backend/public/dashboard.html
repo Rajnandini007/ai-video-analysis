@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard - AI Recruit Analyzer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">AI Recruit Analyzer Dashboard</h1>
+    <button id="logoutBtn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Logout</button>
+  </nav>
+
+  <!-- Main content -->
+  <main class="p-6 flex-grow max-w-6xl mx-auto w-full">
+    
+    <!-- Upload Section -->
+    <section class="mb-8">
+      <h2 class="text-xl font-semibold mb-4">Upload New Interview Video</h2>
+      <form id="uploadForm" class="flex flex-col gap-4">
+        <div class="flex flex-col md:flex-row gap-4 items-center">
+          <input
+            type="file"
+            id="videoFile"
+            accept="video/*"
+            required
+            class="border rounded px-3 py-2 w-full md:w-auto"
+          />
+          <button
+            type="submit"
+            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+          >
+            Upload & Analyze
+          </button>
+        </div>
+
+        <!-- 👤 Candidate Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <input
+            type="text"
+            id="candidateName"
+            placeholder="Candidate Name or Interview ID"
+            class="border rounded px-3 py-2 w-full"
+          />
+          <textarea
+            id="interviewerNotes"
+            rows="3"
+            placeholder="Interviewer Notes (optional)"
+            class="border rounded px-3 py-2 w-full"
+          ></textarea>
+        </div>
+      </form>
+      <p id="uploadError" class="text-red-600 mt-2"></p>
+    </section>
+
+    <!-- Report Section -->
+    <section class="mb-12">
+      <h2 class="text-xl font-semibold mb-4">Latest Analysis Report</h2>
+      <div id="reportCard" class="bg-white rounded shadow p-6 hidden">
+        <p><strong>Confidence:</strong> <span id="confidence"></span></p>
+        <p><strong>Eye Movement:</strong> <span id="eyeMovement"></span></p>
+        <p><strong>Speech Analysis:</strong> <span id="speechAnalysis"></span></p>
+        <p><strong>Tone:</strong> <span id="tone"></span></p>
+        <p><strong>Grammar Mistakes:</strong> <span id="grammarMistakes"></span></p>
+
+        <!-- Summary Paragraph -->
+        <div class="mt-6">
+          <h3 class="font-semibold text-lg mb-2">Summary:</h3>
+          <p id="summaryText" class="text-gray-700">
+            <!-- JS will populate this -->
+          </p>
+        </div>
+
+        <!-- PDF Download -->
+        <div class="mt-6">
+          <button
+            id="generatePdfBtn"
+            class="inline-block bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
+          >
+            Download Full Report (PDF)
+          </button>
+        </div>
+      </div>
+
+      <canvas id="analysisChart" class="mt-6 max-w-lg mx-auto"></canvas>
+    </section>
+
+    <!-- History Section -->
+    <section>
+      <h2 class="text-xl font-semibold mb-4">Past Uploads History</h2>
+      <ul id="historyList" class="bg-white rounded shadow p-4 max-h-64 overflow-y-auto">
+        <!-- History items populated by JS -->
+      </ul>
+    </section>
+  </main>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

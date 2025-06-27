@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login / Register</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+  <h2 id="formTitle" class="text-2xl font-bold mb-6 text-center">Login</h2>
+
+  <form id="authForm" class="flex flex-col gap-4">
+    <input
+      type="text"
+      id="username"
+      placeholder="Username"
+      required
+      class="border border-gray-300 rounded px-3 py-2"
+    />
+    <input
+      type="password"
+      id="password"
+      placeholder="Password"
+      required
+      class="border border-gray-300 rounded px-3 py-2"
+    />
+    <button
+      type="submit"
+      id="submitBtn"
+      class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+    >
+      Login
+    </button>
+  </form>
+
+  <p class="mt-4 text-center">
+    <span id="toggleText">Don't have an account?</span>
+    <button
+      id="toggleBtn"
+      class="text-blue-600 font-semibold hover:underline ml-1"
+      type="button"
+    >
+      Register here
+    </button>
+  </p>
+
+  <p id="message" class="mt-4 text-center text-red-600 font-semibold"></p>
+</div>
+
+<script>
+  const formTitle = document.getElementById('formTitle');
+  const authForm = document.getElementById('authForm');
+  const toggleBtn = document.getElementById('toggleBtn');
+  const toggleText = document.getElementById('toggleText');
+  const submitBtn = document.getElementById('submitBtn');
+  const message = document.getElementById('message');
+
+  let isLoginMode = true; // true = login, false = register
+
+  // Toggle between Login and Register modes
+  toggleBtn.addEventListener('click', () => {
+    isLoginMode = !isLoginMode;
+    if (isLoginMode) {
+      formTitle.textContent = 'Login';
+      submitBtn.textContent = 'Login';
+      toggleText.textContent = "Don't have an account?";
+      toggleBtn.textContent = 'Register here';
+      message.textContent = '';
+    } else {
+      formTitle.textContent = 'Register';
+      submitBtn.textContent = 'Register';
+      toggleText.textContent = 'Already have an account?';
+      toggleBtn.textContent = 'Login here';
+      message.textContent = '';
+    }
+  });
+
+  // Helper: get users from localStorage, or empty array
+  function getUsers() {
+    return JSON.parse(localStorage.getItem('users') || '[]');
+  }
+
+  // Helper: save users array to localStorage
+  function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
+  // On form submit:
+  authForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    message.textContent = '';
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      message.textContent = 'Please enter both username and password.';
+      return;
+    }
+
+    let users = getUsers();
+
+    if (isLoginMode) {
+      // Login flow
+      const user = users.find(u => u.username === username);
+      if (!user) {
+        message.textContent = 'Invalid username or password.';
+        return;
+      }
+      if (user.password !== password) {
+        message.textContent = 'Invalid username or password.';
+        return;
+      }
+      // Success! Save login flag & redirect
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('loggedInUser', username);
+      message.style.color = 'green';
+      message.textContent = 'Login successful! Redirecting...';
+      setTimeout(() => {
+        window.location.href = 'dashboard.html'; // your dashboard page
+      }, 1200);
+    } else {
+      // Register flow
+      if (users.find(u => u.username === username)) {
+        message.textContent = 'Username already taken. Choose another.';
+        return;
+      }
+      users.push({ username, password });
+      saveUsers(users);
+      message.style.color = 'green';
+      message.textContent = 'Registration successful! You can now login.';
+      // Switch to login mode automatically
+      setTimeout(() => {
+        toggleBtn.click();
+        message.style.color = 'red';
+        message.textContent = '';
+        authForm.reset();
+      }, 1500);
+    }
+  });
+</script>
+
+</body>
+</html>

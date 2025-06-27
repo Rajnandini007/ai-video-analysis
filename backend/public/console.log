@@ -1,0 +1,18 @@
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+  console.log("Received credentials:", username, password);
+
+  try {
+    const user = await User.findOne({ username, password });
+    if (!user) {
+      console.log("❌ No match found");
+      return res.status(401).send('Invalid credentials');
+    }
+
+    console.log("✅ User authenticated");
+    res.redirect('/dashboard.html');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Login error');
+  }
+});
